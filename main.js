@@ -1,10 +1,19 @@
-// 引入electron并创建一个Browserwindow
-const { app, BrowserWindow, Menu } = require('electron')
-const path = require('path')
-const url = require('url')
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  Tray,
+  globalShortcut
+} = require('electron')
+// const path = require('path')
+// const url = require('url')
+
+//
 
 // 保持window对象的全局引用,避免JavaScript对象被垃圾回收时,窗口被自动关闭.
 let mainWindow
+var aboutWindow
+var appIcon
 function createWindow() {
   //创建浏览器窗口,宽高自定义具体大小你开心就好
   mainWindow = new BrowserWindow({
@@ -12,7 +21,7 @@ function createWindow() {
     height: 450,
     resizable: false,
     transparent: true,
-    // frame: false,
+    frame: true,
     // x:0,
     // y:0
   })
@@ -37,8 +46,6 @@ function createWindow() {
   })
 }
 
-
-var aboutWindow = null
 function openAboutWindow() {
   if (aboutWindow) {
     aboutWindow.focus()
@@ -58,17 +65,13 @@ function openAboutWindow() {
 
   aboutWindow.loadURL('file://' + __dirname + '/views/about.html')
 
-  aboutWindow.on('closed', function() {
+  aboutWindow.on('closed', function () {
     aboutWindow = null
   })
 }
 
-// 当 Electron 完成初始化并准备创建浏览器窗口时调用此方法
-app.on('ready', function () {
-  createWindow();
-  // mainWindow.setAlwaysOnTop(true, "floating");
-  // mainWindow.setIgnoreMouseEvents(true)
-  //
+function appTopMenu(){
+  //系統選單
   const template = [
     {
       label: 'Monitor',
@@ -77,12 +80,47 @@ app.on('ready', function () {
           label: 'About', click() {
             openAboutWindow();
           }
+        },
+        {
+          label: 'Restart', click() {
+            restartApp()
+          }
         }
       ]
     },
   ]
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
+}
+
+function appTray(){
+  //工作列選單
+  appIcon = new Tray('./public/favicon.ico')
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'Item1', type: 'radio' },
+    { label: 'Item2', type: 'radio' }
+  ])
+  appIcon.setContextMenu(contextMenu)
+}
+
+function restartApp() {
+  app.relaunch()
+  app.exit()
+}
+
+// 当 Electron 完成初始化并准备创建浏览器窗口时调用此方法
+app.on('ready', function () {
+  createWindow();
+  // mainWindow.setAlwaysOnTop(true, "floating");
+  // mainWindow.setIgnoreMouseEvents(true)
+
+  appTopMenu()
+  appTray()
+
+  //
+  globalShortcut.register('CommandOrControl+1', () => {
+    console.log('CommandOrControl+1')
+  })
 })
 
 // 所有窗口关闭时退出应用.

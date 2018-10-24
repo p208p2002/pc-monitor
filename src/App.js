@@ -133,7 +133,7 @@ class App extends Component {
     totalMem = Math.round(totalMem / 1024 / 1024);
     let usedMem = totalMem - Math.round(freeMem / 1024 / 1024);
     // let gpu = getGPUInfo().renderer
-    console.log(cpus)
+    // console.log(cpus)
     return (
       <div className="container-fluid">
         <div className="row">
@@ -149,13 +149,13 @@ class App extends Component {
         <div className="row text-center">
           <div className="col-6">
             <h4>CPU load</h4>
-            <div class="chart-container" style={{ position: 'relative' }}>
+            <div className="chart-container" style={{ position: 'relative' }}>
               <canvas id="cpuChart"></canvas>
             </div>
           </div>
           <div className="col-6">
             <h4>MEM state</h4>
-            <div class="chart-container" style={{ position: 'relative' }}>
+            <div className="chart-container" style={{ position: 'relative' }}>
               <canvas id="memChart"></canvas>
             </div>
           </div>
