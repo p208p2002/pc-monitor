@@ -5,9 +5,13 @@ const {
   Tray,
   globalShortcut
 } = require('electron')
+// const os = require('os');
+const storage = require('electron-json-storage');
+storage.setDataPath(storage.getDefaultDataPath());
+// const defaultDataPath = storage.getDefaultDataPath();
 // const path = require('path')
 // const url = require('url')
-
+// console.log(storage.getDefaultDataPath())
 //
 
 // 保持window对象的全局引用,避免JavaScript对象被垃圾回收时,窗口被自动关闭.
@@ -15,35 +19,53 @@ let mainWindow
 var aboutWindow
 var appIcon
 function createWindow() {
-  //创建浏览器窗口,宽高自定义具体大小你开心就好
-  mainWindow = new BrowserWindow({
-    width: 600,
-    height: 450,
-    resizable: false,
-    transparent: true,
-    frame: true,
-    // x:0,
-    // y:0
+  let frame = true;
+  new Promise(function(resolve,reject){
+    storage.get('frame', function(error, data) {
+      if (error) throw error;
+      if(data){
+        frame = data.val
+      }
+      resolve()
+    });
+  })
+  .then(()=>{
+    mainWindow = new BrowserWindow({
+      width: 600,
+      height: 450,
+      resizable: false,
+      transparent: true,
+      frame: frame,
+      // x:0,
+      // y:0
+    })
+
+    //若無框模式啟動，則視窗懸浮與事件穿透
+    if(!frame){
+      mainWindow.setAlwaysOnTop(true, "floating");
+      mainWindow.setIgnoreMouseEvents(true)
+    }
+
+    /*
+     * 加载应用-----  electron-quick-start中默认的加载入口
+      mainWindow.loadURL(url.format({
+        pathname: path.join(__dirname, 'index.html'),
+        protocol: 'file:',
+        slashes: true
+      }))
+    */
+    // 加载应用----适用于 react 项目
+    mainWindow.loadURL('http://localhost:3000/');
+
+    // 打开开发者工具，默认不打开
+    // mainWindow.webContents.openDevTools()
+
+    // 关闭window时触发下列事件.
+    mainWindow.on('closed', function () {
+      mainWindow = null
+    })
   })
 
-  /*
-   * 加载应用-----  electron-quick-start中默认的加载入口
-    mainWindow.loadURL(url.format({
-      pathname: path.join(__dirname, 'index.html'),
-      protocol: 'file:',
-      slashes: true
-    }))
-  */
-  // 加载应用----适用于 react 项目
-  mainWindow.loadURL('http://localhost:3000/');
-
-  // 打开开发者工具，默认不打开
-  mainWindow.webContents.openDevTools()
-
-  // 关闭window时触发下列事件.
-  mainWindow.on('closed', function () {
-    mainWindow = null
-  })
 }
 
 function openAboutWindow() {
@@ -108,19 +130,30 @@ function restartApp() {
   app.exit()
 }
 
+function listenHotKey(){
+  //無框模式
+  globalShortcut.register('CommandOrControl+1', () => {
+    storage.set('frame', { val:false }, function(error) {
+      if (error) throw error;
+    });
+    restartApp()
+  })
+
+  //有框模式
+  globalShortcut.register('CommandOrControl+2', () => {
+    storage.set('frame', { val:true }, function(error) {
+      if (error) throw error;
+    });
+    restartApp()
+  })
+}
+
 // 当 Electron 完成初始化并准备创建浏览器窗口时调用此方法
 app.on('ready', function () {
   createWindow();
-  // mainWindow.setAlwaysOnTop(true, "floating");
-  // mainWindow.setIgnoreMouseEvents(true)
-
-  appTopMenu()
-  appTray()
-
-  //
-  globalShortcut.register('CommandOrControl+1', () => {
-    console.log('CommandOrControl+1')
-  })
+  appTopMenu();
+  appTray();
+  listenHotKey();
 })
 
 // 所有窗口关闭时退出应用.
