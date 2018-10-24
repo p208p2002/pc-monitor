@@ -3,8 +3,9 @@ const {
   BrowserWindow,
   Menu,
   Tray,
-  globalShortcut
+  globalShortcut,
 } = require('electron')
+const electron = require('electron');
 // const os = require('os');
 const storage = require('electron-json-storage');
 storage.setDataPath(storage.getDefaultDataPath());
@@ -12,7 +13,10 @@ storage.setDataPath(storage.getDefaultDataPath());
 // const path = require('path')
 // const url = require('url')
 // console.log(storage.getDefaultDataPath())
+
 //
+const APP_WIDTH = 350;
+const APP_HEIGHT = 250;
 
 // 保持window对象的全局引用,避免JavaScript对象被垃圾回收时,窗口被自动关闭.
 let mainWindow
@@ -31,9 +35,9 @@ function createWindow() {
   })
   .then(()=>{
     mainWindow = new BrowserWindow({
-      width: 600,
-      height: 450,
-      resizable: false,
+      width: APP_WIDTH,
+      height: APP_HEIGHT,
+      // resizable: false,
       transparent: true,
       frame: frame,
       // x:0,
@@ -44,6 +48,7 @@ function createWindow() {
     if(!frame){
       mainWindow.setAlwaysOnTop(true, "floating");
       mainWindow.setIgnoreMouseEvents(true)
+      // mainWindow.isVisibleOnAllWorkspaces(true)
     }
 
     /*
@@ -65,7 +70,6 @@ function createWindow() {
       mainWindow = null
     })
   })
-
 }
 
 function openAboutWindow() {
@@ -146,9 +150,32 @@ function listenHotKey(){
     });
     restartApp()
   })
+
+  //
+  let screenSize = electron.screen.getPrimaryDisplay();
+  //顯示左上
+   globalShortcut.register('CommandOrControl+3', () => {
+    mainWindow.setPosition(0,0)
+    mainWindow.setSize(APP_WIDTH,APP_HEIGHT)
+    mainWindow.webContents.focus()
+  })
+
+  //顯示右上
+  globalShortcut.register('CommandOrControl+4', () => {
+    mainWindow.setPosition(screenSize.size.width-APP_WIDTH,0)
+    mainWindow.setSize(APP_WIDTH,APP_HEIGHT)
+    mainWindow.webContents.focus()
+  })
+
+  //顯示右下
+  globalShortcut.register('CommandOrControl+5', () => {
+    mainWindow.setPosition(screenSize.size.width-APP_WIDTH,screenSize.size.height-APP_HEIGHT)
+    mainWindow.setSize(APP_WIDTH,APP_HEIGHT)
+    mainWindow.webContents.focus()
+  })
 }
 
-// 当 Electron 完成初始化并准备创建浏览器窗口时调用此方法
+//app 掛載完成
 app.on('ready', function () {
   createWindow();
   appTopMenu();

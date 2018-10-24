@@ -31,6 +31,7 @@ class App extends Component {
           'rgba(255, 26, 26, 0.2)',
           'rgba(0, 128, 43, 0.2)',
         ],
+        borderColor: 'rgba(255, 255, 255, 0.2)',
       }],
       labels: [
         'Used',
@@ -42,6 +43,11 @@ class App extends Component {
     var cpuChart = new Chart(ctx, {
       type: 'pie',
       data: data,
+      options: {
+        legend: {
+          display: false
+        }
+      }
     });
 
     //mem chart
@@ -52,6 +58,7 @@ class App extends Component {
           'rgba(255, 26, 26, 0.2)',
           'rgba(0, 128, 43, 0.2)',
         ],
+        borderColor: 'rgba(255, 255, 255, 0.2)',
       }],
       labels: [
         'Used',
@@ -65,8 +72,9 @@ class App extends Component {
       type: 'pie',
       data: data2,
       options: {
-        barThickness: 100,
-        maxBarThickness: 0
+        legend: {
+          display: false
+        }
       }
     })
 
@@ -136,28 +144,28 @@ class App extends Component {
     // console.log(cpus)
     return (
       <div className="container-fluid">
-        <div className="row">
-          <div className="col-12">
-            <h3>Basic Info</h3>
-            <span>OS&nbsp;:&nbsp;{osType}</span><br/>
-            <span>CPU&nbsp;:&nbsp;{cpus[0].model}({cpuLoad}%)</span><br/>
-            <span>MEM&nbsp;:&nbsp;{usedMem}&nbsp;/&nbsp;{totalMem}&nbsp;MB</span><br/>
-            {/* <span>GPU&nbsp;:&nbsp;{gpu}</span> */}
-          </div>
-        </div>
-        <hr/>
         <div className="row text-center">
           <div className="col-6">
-            <h4>CPU load</h4>
+            <h5>CPU load</h5>
             <div className="chart-container" style={{ position: 'relative' }}>
               <canvas id="cpuChart"></canvas>
             </div>
           </div>
           <div className="col-6">
-            <h4>MEM state</h4>
+            <h5>MEM state</h5>
             <div className="chart-container" style={{ position: 'relative' }}>
               <canvas id="memChart"></canvas>
             </div>
+          </div>
+        </div>
+        <br/>
+        <div className="row">
+          <div className="col-12">
+            {/* <h3>Basic Info</h3> */}
+            <span>OS&nbsp;:&nbsp;{osType}</span><br />
+            <span className="">CPU&nbsp;:&nbsp;{cpus[0].model}&nbsp;({cpuLoad}%)</span><br />
+            <span>MEM&nbsp;:&nbsp;{usedMem}&nbsp;/&nbsp;{totalMem}&nbsp;MB&nbsp;({Math.round(usedMem/totalMem*100)}%)</span><br />
+            {/* <span>GPU&nbsp;:&nbsp;{gpu}</span> */}
           </div>
         </div>
       </div>
