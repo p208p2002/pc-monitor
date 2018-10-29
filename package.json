@@ -19,7 +19,6 @@
     "css-loader": "1.0.0",
     "dotenv": "6.0.0",
     "dotenv-expand": "4.2.0",
-    "electron": "^3.0.5",
     "electron-json-storage": "^4.1.4",
     "eslint": "5.6.0",
     "eslint-config-react-app": "^3.0.4",
@@ -60,9 +59,11 @@
   },
   "scripts": {
     "start": "SET NODE_ENV=development && node scripts/start.js",
-    "build": "SET NODE_ENV=production && node scripts/build.js",
+    "build": "SET NODE_ENV=production && node scripts/build.js && rm -rf react/ && Rename build react",
     "test": "node scripts/test.js",
-    "es": "electron . development"
+    "es": "electron . development",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -115,6 +116,14 @@
     ]
   },
   "devDependencies": {
-    "rollup-plugin-replace": "^2.1.0"
+    "electron-builder": "^20.29.0",
+    "rollup-plugin-replace": "^2.1.0",
+    "electron": "^3.0.5"
+  },
+  "build": {
+    "appId": "your.id",
+    "mac": {
+      "category": "your.app.category.type"
+    }
   }
 }

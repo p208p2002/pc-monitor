@@ -58,7 +58,7 @@ function createWindow() {
       if (DEV_MODE)
         mainWindow.loadURL('http://localhost:3000/');
       else
-        mainWindow.loadURL('file://' + __dirname + '/build/index.html')
+        mainWindow.loadURL('file://' + __dirname + '/react/index.html')
 
       // 打开开发者工具，默认不打开
       // mainWindow.webContents.openDevTools()
@@ -146,23 +146,23 @@ function appTopMenu() {
   Menu.setApplicationMenu(menu)
 }
 
-function appTray() {
-  //工作列選單
-  appIcon = new Tray('./public/favicon.ico')
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: 'Help', click() {
-        openHelpWindow();
-      }
-    },
-    {
-      label: 'Exit', click() {
-        app.quit();
-      }
-    }
-  ])
-  appIcon.setContextMenu(contextMenu)
-}
+// function appTray() {
+//   //工作列選單
+//   appIcon = new Tray('file://' + __dirname + '\\public\\favicon.ico');
+//   const contextMenu = Menu.buildFromTemplate([
+//     {
+//       label: 'Help', click() {
+//         openHelpWindow();
+//       }
+//     },
+//     {
+//       label: 'Exit', click() {
+//         app.quit();
+//       }
+//     }
+//   ])
+//   appIcon.setContextMenu(contextMenu)
+// }
 
 function restartApp() {
   app.relaunch()
@@ -214,7 +214,7 @@ function listenHotKey() {
 app.on('ready', function () {
   createWindow();
   appTopMenu();
-  appTray();
+  // appTray();
   listenHotKey();
 })
 
