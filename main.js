@@ -57,13 +57,8 @@ function createWindow() {
 
       if (DEV_MODE)
         mainWindow.loadURL('http://localhost:3000/');
-      else {
-        // mainWindow.loadURL(url.format({
-        //   pathname: path.join(__dirname, 'index.html'),
-        //   protocol: 'file:',
-        //   slashes: true
-        // }))
-      }
+      else
+        mainWindow.loadURL('file://' + __dirname + '/build/index.html')
 
       // 打开开发者工具，默认不打开
       // mainWindow.webContents.openDevTools()
