@@ -5,6 +5,7 @@ const {
   Tray,
   globalShortcut,
 } = require('electron')
+const DEV_MODE = process.argv[2] === 'development' ? true : false;
 const electron = require('electron');
 // const os = require('os');
 const storage = require('electron-json-storage');
@@ -15,61 +16,63 @@ storage.setDataPath(storage.getDefaultDataPath());
 // console.log(storage.getDefaultDataPath())
 
 //
+// const APP_WIDTH = 1024; //350
+// const APP_HEIGHT = 768; //230
 const APP_WIDTH = 350;
-const APP_HEIGHT = 250;
+const APP_HEIGHT = 230;
 
 // 保持window对象的全局引用,避免JavaScript对象被垃圾回收时,窗口被自动关闭.
 let mainWindow
-var aboutWindow
+let aboutWindow
+let helpWindow
 var appIcon
 function createWindow() {
   let frame = true;
-  new Promise(function(resolve,reject){
-    storage.get('frame', function(error, data) {
+  new Promise(function (resolve, reject) {
+    storage.get('frame', function (error, data) {
       if (error) throw error;
-      if(data){
+      if (data) {
         frame = data.val
       }
       resolve()
     });
   })
-  .then(()=>{
-    mainWindow = new BrowserWindow({
-      width: APP_WIDTH,
-      height: APP_HEIGHT,
-      // resizable: false,
-      transparent: true,
-      frame: frame,
-      // x:0,
-      // y:0
+    .then(() => {
+      mainWindow = new BrowserWindow({
+        width: APP_WIDTH,
+        height: APP_HEIGHT,
+        // resizable: false,
+        transparent: true,
+        frame: frame,
+        // x:0,
+        // y:0
+      })
+
+      //若無框模式啟動，則視窗懸浮與事件穿透
+      if (!frame) {
+        mainWindow.setAlwaysOnTop(true, "floating");
+        mainWindow.setIgnoreMouseEvents(true)
+        // mainWindow.isVisibleOnAllWorkspaces(true)
+      }
+
+      if (DEV_MODE)
+        mainWindow.loadURL('http://localhost:3000/');
+      else {
+        // mainWindow.loadURL(url.format({
+        //   pathname: path.join(__dirname, 'index.html'),
+        //   protocol: 'file:',
+        //   slashes: true
+        // }))
+      }
+
+      // 打开开发者工具，默认不打开
+      // mainWindow.webContents.openDevTools()
+
+      // 关闭window时触发下列事件.
+      mainWindow.on('closed', function () {
+        mainWindow = null
+      })
     })
-
-    //若無框模式啟動，則視窗懸浮與事件穿透
-    if(!frame){
-      mainWindow.setAlwaysOnTop(true, "floating");
-      mainWindow.setIgnoreMouseEvents(true)
-      // mainWindow.isVisibleOnAllWorkspaces(true)
-    }
-
-    /*
-     * 加载应用-----  electron-quick-start中默认的加载入口
-      mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'index.html'),
-        protocol: 'file:',
-        slashes: true
-      }))
-    */
-    // 加载应用----适用于 react 项目
-    mainWindow.loadURL('http://localhost:3000/');
-
-    // 打开开发者工具，默认不打开
-    // mainWindow.webContents.openDevTools()
-
-    // 关闭window时触发下列事件.
-    mainWindow.on('closed', function () {
-      mainWindow = null
-    })
-  })
 }
 
 function openAboutWindow() {
@@ -96,12 +99,41 @@ function openAboutWindow() {
   })
 }
 
-function appTopMenu(){
+function openHelpWindow() {
+  if (helpWindow) {
+    helpWindow.focus()
+    return
+  }
+
+  helpWindow = new BrowserWindow({
+    height: 185,
+    resizable: false,
+    width: 270,
+    title: '',
+    minimizable: false,
+    fullscreenable: false,
+  })
+
+  helpWindow.setMenu(null);
+
+  helpWindow.loadURL('file://' + __dirname + '/views/help.html')
+
+  helpWindow.on('closed', function () {
+    helpWindow = null
+  })
+}
+
+function appTopMenu() {
   //系統選單
   const template = [
     {
       label: 'Monitor',
       submenu: [
+        {
+          label: 'Help', click() {
+            openHelpWindow();
+          }
+        },
         {
           label: 'About', click() {
             openAboutWindow();
@@ -119,12 +151,20 @@ function appTopMenu(){
   Menu.setApplicationMenu(menu)
 }
 
-function appTray(){
+function appTray() {
   //工作列選單
   appIcon = new Tray('./public/favicon.ico')
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Item1', type: 'radio' },
-    { label: 'Item2', type: 'radio' }
+    {
+      label: 'Help', click() {
+        openHelpWindow();
+      }
+    },
+    {
+      label: 'Exit', click() {
+        app.quit();
+      }
+    }
   ])
   appIcon.setContextMenu(contextMenu)
 }
@@ -134,18 +174,18 @@ function restartApp() {
   app.exit()
 }
 
-function listenHotKey(){
-  //無框模式
+function listenHotKey() {
+  //有框模式
   globalShortcut.register('CommandOrControl+1', () => {
-    storage.set('frame', { val:false }, function(error) {
+    storage.set('frame', { val: true }, function (error) {
       if (error) throw error;
     });
     restartApp()
   })
 
-  //有框模式
+  //無框模式
   globalShortcut.register('CommandOrControl+2', () => {
-    storage.set('frame', { val:true }, function(error) {
+    storage.set('frame', { val: false }, function (error) {
       if (error) throw error;
     });
     restartApp()
@@ -154,23 +194,23 @@ function listenHotKey(){
   //
   let screenSize = electron.screen.getPrimaryDisplay();
   //顯示左上
-   globalShortcut.register('CommandOrControl+3', () => {
-    mainWindow.setPosition(0,0)
-    mainWindow.setSize(APP_WIDTH,APP_HEIGHT)
+  globalShortcut.register('CommandOrControl+3', () => {
+    mainWindow.setPosition(0, 0)
+    mainWindow.setSize(APP_WIDTH, APP_HEIGHT)
     mainWindow.webContents.focus()
   })
 
   //顯示右上
   globalShortcut.register('CommandOrControl+4', () => {
-    mainWindow.setPosition(screenSize.size.width-APP_WIDTH,0)
-    mainWindow.setSize(APP_WIDTH,APP_HEIGHT)
+    mainWindow.setPosition(screenSize.size.width - APP_WIDTH, 0)
+    mainWindow.setSize(APP_WIDTH, APP_HEIGHT)
     mainWindow.webContents.focus()
   })
 
   //顯示右下
   globalShortcut.register('CommandOrControl+5', () => {
-    mainWindow.setPosition(screenSize.size.width-APP_WIDTH,screenSize.size.height-APP_HEIGHT)
-    mainWindow.setSize(APP_WIDTH,APP_HEIGHT)
+    mainWindow.setPosition(screenSize.size.width - APP_WIDTH, screenSize.size.height - APP_HEIGHT)
+    mainWindow.setSize(APP_WIDTH, APP_HEIGHT)
     mainWindow.webContents.focus()
   })
 }

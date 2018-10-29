@@ -24,6 +24,8 @@ class App extends Component {
 
   componentDidMount() {
     //cpu chart data
+    console.log(process.env.NODE_ENV)
+
     let data = {
       datasets: [{
         data: [0, 100],
