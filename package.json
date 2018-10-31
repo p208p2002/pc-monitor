@@ -1,5 +1,5 @@
 {
-  "name": "ele-react-win-app",
+  "name": "pc-monitor",
   "version": "0.1.0",
   "private": true,
   "main": "main.js",
@@ -121,9 +121,9 @@
     "electron": "^3.0.5"
   },
   "build": {
-    "appId": "your.id",
+    "appId": "pc-monitor",
     "mac": {
-      "category": "your.app.category.type"
+      "category": "pc-monitor"
     },
     "extraFiles":["public"]
   }
