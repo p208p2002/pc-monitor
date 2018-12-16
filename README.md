@@ -1,3 +1,4 @@
 # pc-monitor
 ![cover](https://raw.githubusercontent.com/p208p2002/pc-monitor/master/cover.png)
-a project made by electron and reactjs
+
+A PC state monitor made by electron and reactjs
