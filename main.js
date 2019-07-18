@@ -175,7 +175,9 @@ function listenHotKey() {
     storage.set('frame', { val: true }, function (error) {
       if (error) throw error;
     });
-    restartApp()
+    setTimeout(()=>{
+      restartApp()
+    },1000)
   })
 
   //無框模式
@@ -183,7 +185,9 @@ function listenHotKey() {
     storage.set('frame', { val: false }, function (error) {
       if (error) throw error;
     });
-    restartApp()
+    setTimeout(()=>{
+      restartApp()
+    },1000)
   })
 
   //
