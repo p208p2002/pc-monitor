@@ -197,7 +197,7 @@ function listenHotKey() {
   //
   globalShortcut.register('CommandOrControl+d',()=>{
     let totalDisplay = electron.screen.getAllDisplays().length
-    if(SELECT_DISPLAY === totalDisplay){
+    if(SELECT_DISPLAY === totalDisplay-1){
       SELECT_DISPLAY = 0
     }
     else{
