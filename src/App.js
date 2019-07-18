@@ -121,7 +121,7 @@ class App extends Component {
       removeData(memChart)
       addData(memChart, 'Used', totalMem - freeMem)
       addData(memChart, 'Free', freeMem)
-    }, 1500)
+    }, 2000)
   }
 
   getGPUInfo() {
