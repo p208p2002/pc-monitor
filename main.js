@@ -21,6 +21,9 @@ storage.setDataPath(storage.getDefaultDataPath());
 const APP_WIDTH = 350;
 const APP_HEIGHT = 230;
 
+// 多螢幕設置
+var SELECT_DISPLAY = 0
+
 // 保持window对象的全局引用,避免JavaScript对象被垃圾回收时,窗口被自动关闭.
 let mainWindow
 let aboutWindow
@@ -102,9 +105,9 @@ function openHelpWindow() {
   }
 
   helpWindow = new BrowserWindow({
-    height: 185,
+    height: 220,
     resizable: false,
-    width: 270,
+    width: 320,
     title: '',
     minimizable: false,
     fullscreenable: false,
@@ -176,9 +179,9 @@ function listenHotKey() {
     storage.set('frame', { val: true }, function (error) {
       if (error) throw error;
     });
-    setTimeout(()=>{
+    setTimeout(() => {
       restartApp()
-    },1000)
+    }, 1000)
   })
 
   //無框模式
@@ -186,31 +189,88 @@ function listenHotKey() {
     storage.set('frame', { val: false }, function (error) {
       if (error) throw error;
     });
-    setTimeout(()=>{
+    setTimeout(() => {
       restartApp()
-    },1000)
+    }, 1000)
   })
 
   //
-  let screenSize = electron.screen.getPrimaryDisplay();
+  globalShortcut.register('CommandOrControl+d',()=>{
+    let totalDisplay = electron.screen.getAllDisplays().length
+    if(SELECT_DISPLAY === totalDisplay){
+      SELECT_DISPLAY = 0
+    }
+    else{
+      SELECT_DISPLAY ++
+    }
+    // 初始設定左上
+    //
+    let displays = electron.screen.getAllDisplays()
+    let externalDisplay = displays[SELECT_DISPLAY]
+    if (externalDisplay) {      
+      mainWindow.setPosition(
+        externalDisplay.bounds.x,
+        externalDisplay.bounds.y
+      )
+      mainWindow.setPosition(
+        externalDisplay.bounds.x,
+        externalDisplay.bounds.y
+      )
+    }
+    mainWindow.webContents.focus()
+  })
   //顯示左上
   globalShortcut.register('CommandOrControl+3', () => {
-    mainWindow.setPosition(0, 0)
-    mainWindow.setSize(APP_WIDTH, APP_HEIGHT)
-    mainWindow.webContents.focus()
+    console.log(SELECT_DISPLAY)
+     //
+     let displays = electron.screen.getAllDisplays()
+     let externalDisplay = displays[SELECT_DISPLAY]
+     if (externalDisplay) {      
+       mainWindow.setPosition(
+         externalDisplay.bounds.x,
+         externalDisplay.bounds.y
+       )
+       mainWindow.setPosition(
+         externalDisplay.bounds.x,
+         externalDisplay.bounds.y
+       )
+     }
+     mainWindow.webContents.focus()
   })
 
   //顯示右上
   globalShortcut.register('CommandOrControl+4', () => {
-    mainWindow.setPosition(screenSize.size.width - APP_WIDTH, 0)
-    mainWindow.setSize(APP_WIDTH, APP_HEIGHT)
-    mainWindow.webContents.focus()
+     //
+     let displays = electron.screen.getAllDisplays()    
+     let externalDisplay = displays[SELECT_DISPLAY]
+     if (externalDisplay) {      
+       mainWindow.setPosition(
+         externalDisplay.bounds.x,
+         externalDisplay.bounds.y
+       )
+       mainWindow.setPosition(
+         externalDisplay.bounds.x + externalDisplay.size.width - APP_WIDTH,
+         externalDisplay.bounds.y
+       )
+     }
+     mainWindow.webContents.focus()
   })
 
   //顯示右下
   globalShortcut.register('CommandOrControl+5', () => {
-    mainWindow.setPosition(screenSize.size.width - APP_WIDTH, screenSize.size.height - APP_HEIGHT)
-    mainWindow.setSize(APP_WIDTH, APP_HEIGHT)
+    //
+    let displays = electron.screen.getAllDisplays()    
+    let externalDisplay = displays[SELECT_DISPLAY]
+    if (externalDisplay) {      
+      mainWindow.setPosition(
+        externalDisplay.bounds.x,
+        externalDisplay.bounds.y
+      )
+      mainWindow.setPosition(
+        externalDisplay.bounds.x + externalDisplay.size.width - APP_WIDTH,
+        externalDisplay.bounds.y + externalDisplay.size.height - APP_HEIGHT
+      )
+    }
     mainWindow.webContents.focus()
   })
 }
