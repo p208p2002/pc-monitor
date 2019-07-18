@@ -52,6 +52,7 @@ function createWindow() {
       if (!frame) {
         mainWindow.setAlwaysOnTop(true, "floating");
         mainWindow.setIgnoreMouseEvents(true)
+        mainWindow.setSkipTaskbar(true)
         // mainWindow.isVisibleOnAllWorkspaces(true)
       }
 
