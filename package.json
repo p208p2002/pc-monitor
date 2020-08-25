@@ -126,6 +126,9 @@
     "mac": {
       "category": "pc-monitor"
     },
+    "nsis":{
+      "oneClick":false
+    },
     "extraFiles": [
       "public"
     ]
