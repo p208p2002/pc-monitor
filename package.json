@@ -117,7 +117,7 @@
     ]
   },
   "devDependencies": {
-    "electron": "^3.0.5",
+    "electron": "^7.2.4",
     "electron-builder": "^20.44.4",
     "rollup-plugin-replace": "^2.1.0"
   },
