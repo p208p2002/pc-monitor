@@ -19,7 +19,7 @@ storage.setDataPath(storage.getDefaultDataPath());
 // const APP_WIDTH = 1024; //350
 // const APP_HEIGHT = 768; //230
 const APP_WIDTH = 350;
-const APP_HEIGHT = 230;
+const APP_HEIGHT = 100;
 
 // 多螢幕設置
 var SELECT_DISPLAY = 0
@@ -268,7 +268,7 @@ function listenHotKey() {
       )
       mainWindow.setPosition(
         externalDisplay.bounds.x + externalDisplay.size.width - APP_WIDTH,
-        externalDisplay.bounds.y + externalDisplay.size.height - APP_HEIGHT
+        externalDisplay.bounds.y + externalDisplay.size.height - mainWindow.getSize()[1]
       )
     }
     mainWindow.webContents.focus()
