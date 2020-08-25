@@ -42,6 +42,7 @@ function createWindow() {
   })
     .then(() => {
       mainWindow = new BrowserWindow({
+        icon: __dirname + '/favicon.ico',
         width: APP_WIDTH,
         height: APP_HEIGHT,
         // resizable: false,

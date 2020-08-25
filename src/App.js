@@ -9,8 +9,14 @@ if (!cpu.isSupported()) {
 
 function StatsBar(props) {
   let { rate, color = 'red' } = props
-  let green =  255 - Math.round(2.55*rate)
-  let red = Math.round(2.55*rate)
+  let green =  255 - 2.55*rate
+  let red = 2.55*rate
+  if(red > green)
+    green *= 0.6
+  if(green > red)
+    red *= 0.6
+  green = Math.round(green)
+  red = Math.round(red)
   return (
     <div style={{ position: 'relative', top: 0 }}>
       <span style={{

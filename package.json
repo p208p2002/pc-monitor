@@ -1,6 +1,8 @@
 {
   "name": "pc-monitor",
-  "version": "0.1.5",
+  "description":"pc-monitor",
+  "author": "Philip Huang",
+  "version": "0.2.0",
   "private": true,
   "main": "main.js",
   "dependencies": {
@@ -115,9 +117,9 @@
     ]
   },
   "devDependencies": {
-    "electron-builder": "^20.29.0",
-    "rollup-plugin-replace": "^2.1.0",
-    "electron": "^3.0.5"
+    "electron": "^3.0.5",
+    "electron-builder": "^20.44.4",
+    "rollup-plugin-replace": "^2.1.0"
   },
   "build": {
     "appId": "pc-monitor",
