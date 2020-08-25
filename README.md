@@ -16,4 +16,4 @@ A PC state monitor made by electron and reactjs
 
 - `ctrl + 5` set App at upper right
 
-- `ctrl + 6` select show on which display(muilt-display)
+- `ctrl + d` select show on which display(muilt-display)
